@@ -51,13 +51,14 @@ bool FMyFeatureTest::RunTest(const FString& Parameters)
 }
 ```
 
-**Rider validation after writing:** run `get_file_problems` on the file.  
+**Rider validation after writing:** run `execute_tool(command="get_file_problems --filePath <path>")` on the file.
 Rider will flag: wrong return type on `RunTest`, missing `AutomationTest.h`, invalid flags combination.
 
 ### Common pitfalls
 - Returning `false` from `RunTest` always marks failure — even if all assertions passed
 - Using `ApplicationContext` when running from the editor → test invisible in Session Frontend
 - Registering in a `Runtime` module → test never appears
+- For `UAttributeSet` tests created with `NewObject`, `SetXxx` accessors may require an owning `UAbilitySystemComponent`; use `InitXxx` for setup values or create a minimal owning actor and ASC before using accessors that depend on ownership.
 
 ---
 
@@ -96,7 +97,7 @@ void FMyFeatureSpec::Define()
 }
 ```
 
-**Rider validation:** run `get_file_problems` on the file.
+**Rider validation:** run `execute_tool(command="get_file_problems --filePath <path>")` on the file.
 
 ### Common pitfalls
 - `BeforeEach` lambda captures `this` but `SharedValue` is reset per-spec — don't capture by value
@@ -139,7 +140,7 @@ TEST_CLASS(FMySubsystemTests, "MyProject.MySubsystem")
 };
 ```
 
-**Rider validation after writing:** run `get_file_problems` on the file. Use `get_symbol_info` to confirm the subsystem's API contract before writing assertions.
+**Rider validation after writing:** run `execute_tool(command="get_file_problems --filePath <path>")` on the file. Use `execute_tool(command="get_symbol_info --filePath <path> --line <line> --column <column>")` to confirm the subsystem's API contract before writing assertions.
 
 ### Common pitfalls
 - `ASSERT_THAT` inside a `.Do(lambda)` only exits the lambda — the command sequence continues; check `HasAnyErrors()` if subsequent commands must stop
@@ -268,7 +269,7 @@ void AMyFunctionalTest::StartTest()
 }
 ```
 
-**After writing:** use `get_symbol_info` to confirm the API contract, then run `get_file_problems` on the file.
+**After writing:** use `execute_tool(command="get_symbol_info --filePath <path> --line <line> --column <column>")` to confirm the API contract, then run `execute_tool(command="get_file_problems --filePath <path>")` on the file.
 
 ### Common pitfalls
 - Functional test class without a test map = test never executes
@@ -309,7 +310,7 @@ public class MyMathTests : TestModuleRules
 }
 ```
 
-**Rider validation:** run `get_file_problems` on the file.
+**Rider validation:** run `execute_tool(command="get_file_problems --filePath <path>")` on the file.
 
 ### Common pitfalls
 - Inheriting from `TestModuleRules`, not `ModuleRules` (LowLevel tests have a different base)
@@ -355,10 +356,10 @@ bool FMyAsyncTest::RunTest(const FString& Parameters)
 
 Before writing test assertions, verify the actual API:
 
-1. Use `search_symbol` to find where the class is declared
-2. Read the header using the standard Read tool to understand the public interface
-3. Use `get_symbol_info` to check if a method can return null or has preconditions
-4. Use `analyze_calls` to trace what the method calls and what state it needs
+1. `search_symbol --q <ClassName>` to find where the class is declared — add `--include_external true` for an engine or plugin type
+2. `Read` the header to understand the public interface, the real signatures, and the access levels
+3. `get_symbol_info --filePath <path> --line <line> --column <column>` to check whether a method can return null or has preconditions — this one is position-based, so `Read` the file first to get the coordinates
+4. `analyze_calls --symbolFqn <FullyQualifiedCallable> --analysisKind OUTGOING_CALLS` to trace what the method calls and what state it needs — this one is name-based, never a path/line/column
 
 This prevents writing tests that assert on behavior the code never had, or that call methods requiring state the test never sets up.
 
