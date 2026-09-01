@@ -17,7 +17,7 @@ Use this tool to see all currently set breakpoints and their properties.<br/><br
 | &nbsp;&nbsp;[].file | string? | File path of the breakpoint as provided by the debugger (usually file URL). |
 | &nbsp;&nbsp;[].line | integer? | 1-based breakpoint line when available. |
 | &nbsp;&nbsp;[].enabled* | boolean | Whether breakpoint is enabled. |
-| &nbsp;&nbsp;[].owner* | user \\| agent | Breakpoint ownership marker: `agent` if created/updated by MCP toolset, otherwise `user`. |
+| &nbsp;&nbsp;[].owner* | user \\| agent | Breakpoint ownership marker: `agent` if created by an MCP toolset, otherwise `user`. Updating a user breakpoint does not transfer ownership. |
 | &nbsp;&nbsp;[].condition | string? | Conditional expression for triggering breakpoint, if set. |
 | &nbsp;&nbsp;[].logExpression | string? | Evaluate-and-log expression of the logpoint, if set (the value logged when the line is reached). |
 | &nbsp;&nbsp;[].isLogMessage* | boolean | Whether breakpoint logs source position when hit. |

@@ -179,7 +179,6 @@ Only useful with the UE editor running and RiderLink loaded.
 
 ## Other
 
-- `simulate_input` — simulate player input; each mode has its own named params.
 - `take_screenshot`, `viewport_camera`, `spawn_actor` — editor/game viewport control.
 - `get_run_configurations`, `execute_run_configuration` — list and launch run configurations.
 - `get_solution_projects`, `get_project_dependencies` — solution structure; `--projectName` must be exactly as `get_solution_projects` returned it.

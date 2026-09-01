@@ -23,8 +23,8 @@ IDE-indexed full-text search. Prefer over rg/grep when IDE index, generated/refl
 ### `search_file`
 Find files by glob pattern.
 
-### `skill_search`
-Unified search with explicit mode: file (glob), text (literal), or regex.
+### `search_regex`
+IDE-indexed regex search. Use when a literal `search_text` query cannot express the pattern.
 
 ---
 
@@ -115,13 +115,6 @@ Read UPROPERTY values from a `.uasset` file. Requires editor running.
 
 ### `find_default_value_overrides`
 Find every asset that overrides a reflected field's default. Works **without** the editor running.
-
----
-
-## UE Input Simulation
-
-### `simulate_input`
-Simulate player input. Each mode has its own set of named params.
 
 ---
 
